@@ -16,7 +16,7 @@ const login = () => {
   >
     <div class="h-full pl-3 py-4 overflow-y-auto bg-[#fafafa]">
       <router-link to="/"
-        ><img src="logo.png" alt="" class="mb-[40px] mt-[15px]"
+        ><img src="/logo.png" alt="" class="mb-[40px] mt-[15px]"
       /></router-link>
       <ul v-for="el in sidebar" class="space-y-2 font-medium">
         <router-link
