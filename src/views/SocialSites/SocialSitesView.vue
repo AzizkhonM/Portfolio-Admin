@@ -5,7 +5,6 @@ import { toast } from "vue3-toastify";
 import { useSocials } from "../../service/socials";
 import { socialsStore } from "../../stores/socials/socialsStore";
 import { onMounted } from "vue";
-import { Uploader } from "uploader";
 
 import {
   initAccordions,
@@ -21,22 +20,22 @@ import {
   initTooltips,
 } from "flowbite";
 
-const options = { multi: true };
-
-let imgFile = ref(null);
-
 let id = ref(null);
 
 const socialsInfo = reactive({
   site: "",
   username: "",
-  image: "",
+  color: "",
+  icon: "",
+  icon_color: "",
 });
 
 const updateInfo = reactive({
   site: "",
   username: "",
-  image: "",
+  color: "",
+  icon: "",
+  icon_color: "",
 });
 
 const store = socialsStore();
@@ -66,6 +65,9 @@ const updateSite = async (el) => {
   id.value = el._id;
   updateInfo.site = el.site;
   updateInfo.username = el.username;
+  updateInfo.color = el.color;
+  updateInfo.icon = el.icon;
+  updateInfo.icon_color = el.icon_color;
   showUpdateModal.value = true;
 };
 
@@ -91,35 +93,15 @@ const addSocial = async () => {
     pauseOnHover: true,
   });
 
-  socialsInfo.image = "";
   socialsInfo.site = "";
   socialsInfo.username = "";
+  socialsInfo.color = "";
+  socialsInfo.icon = "";
+  socialsInfo.icon_color = "";
 
   setTimeout(() => {
     location.reload();
   }, 2800);
-};
-
-const uploader = Uploader({
-  apiKey: "free",
-});
-
-const onFileSelected = async () => {
-  uploader
-    .open(options)
-    .then((files) => {
-      if (files.length === 0) {
-        console.log("No files selected.");
-      } else {
-        console.log("Files uploaded:");
-        console.log(files.map((f) => f.fileUrl));
-        updateInfo.image = files.map((f) => f.fileUrl)[0];
-        socialsInfo.image = files.map((f) => f.fileUrl)[0];
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
 };
 
 let showCreateModal = ref(false);
@@ -207,6 +189,8 @@ onMounted(() => {
                 <th scope="col" class="px-4 py-3">Social media site</th>
                 <th scope="col" class="px-4 py-3">Username</th>
                 <th scope="col" class="px-4 py-3">Icon</th>
+                <th scope="col" class="px-4 py-3">Color</th>
+                <th scope="col" class="px-4 py-3">Color of icon</th>
                 <th scope="col" class="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -226,7 +210,13 @@ onMounted(() => {
                   <a :href="el.username">{{ el.username }}</a>
                 </td>
                 <td class="px-4 py-3">
-                  <img :src="el.image" width="80" alt="" />
+                  <i :class="el.icon" class="text-5xl text-black"></i>
+                </td>
+                <td class="px-4 py-3">
+                  <input type="color" :value="el.color" disabled="true" />
+                </td>
+                <td class="px-4 py-3">
+                  <input type="color" :value="el.icon_color" disabled="true" />
                 </td>
                 <td class="px-4 py-3">
                   <abbr title="Remove"
@@ -270,8 +260,16 @@ onMounted(() => {
         </div>
       </div>
       <div class="mb-7">
-        <h1 class="w-full text-lg">Icon:</h1>
-        <input type="file" class="w-full" @change="(e) => onFileSelected(e)" />
+        <div class="flex gap-7">
+          <h1 class="w-full text-lg">Icon:</h1>
+          <h1 class="w-full text-lg">Color:</h1>
+          <h1 class="w-full text-lg">Color of icon:</h1>
+        </div>
+        <div class="flex gap-7">
+          <input v-model="socialsInfo.icon" type="text" class="w-full rounded-xl" />
+          <input v-model="socialsInfo.color" type="text" class="w-full rounded-xl" />
+          <input v-model="socialsInfo.icon_color" type="text" class="w-full rounded-xl" />
+        </div>
       </div>
       <div class="w-full flex justify-end items-center">
         <button
@@ -304,8 +302,16 @@ onMounted(() => {
         </div>
       </div>
       <div class="mb-7">
-        <h1 class="w-full text-lg">Icon:</h1>
-        <input type="file" class="w-full" @change="(e) => onFileSelected(e)" />
+        <div class="flex gap-7">
+          <h1 class="w-full text-lg">Icon:</h1>
+          <h1 class="w-full text-lg">Color:</h1>
+          <h1 class="w-full text-lg">Color of icon:</h1>
+        </div>
+        <div class="flex gap-7">
+          <input v-model="updateInfo.icon" type="text" class="w-full rounded-xl" />
+          <input v-model="updateInfo.color" type="text" class="w-full rounded-xl" />
+          <input v-model="updateInfo.icon_color" type="text" class="w-full rounded-xl" />
+        </div>
       </div>
       <div class="w-full flex justify-end items-center">
         <button

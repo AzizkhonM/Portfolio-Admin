@@ -5,7 +5,6 @@ import { toast } from "vue3-toastify";
 import { useSkill } from "../../service/skill/index";
 import { skillStore } from "../../stores/skill/skillStore";
 import { onMounted } from "vue";
-import { Upload } from "upload-js";
 
 import {
   initAccordions,
@@ -28,11 +27,13 @@ let id = ref(null);
 const skillInfo = reactive({
   skill: "",
   image: "",
+  link: "",
 });
 
 const updateInfo = reactive({
   skill: "",
   image: "",
+  link: "",
 });
 
 const store = skillStore();
@@ -60,13 +61,13 @@ const deleteSkill = async (id) => {
 const updateSkill = async (el) => {
   id.value = "";
   id.value = el._id;
+  updateInfo.image = el.image;
+  updateInfo.link = el.link;
+  updateInfo.skill = el.skill;
   showUpdateModal.value = true;
 };
 
 const updateSkill2 = async () => {
-  console.log(id.value);
-  const { fileUrl } = await upload.uploadFile(imgFile.value);
-  updateInfo.image = fileUrl;
   const res = await useSkill.update(id.value, updateInfo);
   console.log(res);
 
@@ -80,8 +81,6 @@ const updateSkill2 = async () => {
 };
 
 const addSkill = async () => {
-  const { fileUrl } = await upload.uploadFile(imgFile.value);
-  skillInfo.image = fileUrl;
   const res = await useSkill.create(skillInfo);
   console.log(res);
   toast.success("Ijtimoiy tarmoqdagi sahifa muvaffaqiyatli qo'shildi!", {
@@ -95,16 +94,6 @@ const addSkill = async () => {
   setTimeout(() => {
     location.reload();
   }, 2800);
-};
-
-const upload = Upload({
-  apiKey: "public_FW25bRnE4fgNEhLnwfjq55kNjgyn",
-});
-
-const onFileSelected = async (event) => {
-  imgFile.value = "";
-  imgFile.value = event.target.files[0];
-  console.log(imgFile.value);
 };
 
 let showCreateModal = ref(false);
@@ -191,6 +180,7 @@ onMounted(() => {
               <tr>
                 <th scope="col" class="px-4 py-3">Skill</th>
                 <th scope="col" class="px-4 py-3">Icon</th>
+                <th scope="col" class="px-4 py-3">Link</th>
                 <th scope="col" class="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -202,7 +192,12 @@ onMounted(() => {
                 >
                   {{ el.skill }}
                 </th>
-                <td class="px-4 py-3"><img :src="el.image" width="100" alt="" /></td>
+                <td class="px-4 py-3">
+                  <i :class="el.image" class="text-black text-3xl"></i>
+                </td>
+                <td class="px-4 py-3">
+                  <a :href="el.link">{{ el.link }}</a>
+                </td>
                 <td class="px-4 py-3">
                   <abbr title="Remove"
                     ><i
@@ -237,14 +232,16 @@ onMounted(() => {
       <div class="mb-7">
         <div class="flex gap-7">
           <h1 class="w-full text-lg">Skill:</h1>
+          <h1 class="w-full text-lg">Icon:</h1>
         </div>
         <div class="flex gap-7">
           <input v-model="skillInfo.skill" type="text" class="w-full rounded-xl" />
+          <input v-model="skillInfo.image" type="text" class="w-full rounded-xl" />
         </div>
       </div>
       <div class="mb-7">
-        <h1 class="w-full text-lg">Icon:</h1>
-        <input type="file" class="w-full" @change="(e) => onFileSelected(e)" />
+        <h1 class="w-full text-lg">Link:</h1>
+        <input v-model="skillInfo.link" type="text" class="w-full rounded-xl" />
       </div>
       <div class="w-full flex justify-end items-center">
         <button
@@ -269,14 +266,16 @@ onMounted(() => {
       <div class="mb-7">
         <div class="flex gap-7">
           <h1 class="w-full text-lg">Skill:</h1>
+          <h1 class="w-full text-lg">Icon:</h1>
         </div>
         <div class="flex gap-7">
           <input v-model="updateInfo.skill" type="text" class="w-full rounded-xl" />
+          <input v-model="updateInfo.image" type="text" class="w-full rounded-xl" />
         </div>
       </div>
       <div class="mb-7">
-        <h1 class="w-full text-lg">Icon:</h1>
-        <input type="file" class="w-full" @change="(e) => onFileSelected(e)" />
+        <h1 class="w-full text-lg">Link:</h1>
+        <input v-model="updateInfo.link" type="text" class="w-full rounded-xl" />
       </div>
       <div class="w-full flex justify-end items-center">
         <button
